@@ -1,0 +1,63 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &5900657127075688870
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2891809415862074566}
+  - component: {fileID: 7483325055889162833}
+  m_Layer: 5
+  m_Name: FloorNode
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &2891809415862074566
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5900657127075688870}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 125, y: 125}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &7483325055889162833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5900657127075688870}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 925a9888d59203549bf5e5457bf89226, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  unused: 0
+  prefabs:
+  - {fileID: 5900657127075688870, guid: 52e61555b4dc04c4695245da699f0aa4, type: 3}
+  - {fileID: 5900657127075688870, guid: 967a7c2db26520d4e8bbe97a5a67a631, type: 3}
+  - {fileID: 5900657127075688870, guid: 6ec616b22686c3040b587f0ee57d7149, type: 3}
+  - {fileID: 5900657127075688870, guid: 6cd0c5f845fa6fc46b0be4f51d38c44c, type: 3}
+  - {fileID: 5900657127075688870, guid: 1a0f34abea8fbff43b2dec372274bc18, type: 3}
+  - {fileID: 5900657127075688870, guid: d2d12d794aa006544961d8a0362078d8, type: 3}
+  - {fileID: 5900657127075688870, guid: 636e086f37e37ce4a896899f92df6226, type: 3}
+  - {fileID: 5900657127075688870, guid: e6fcd3426606cba4f8b384ea8c78fc46, type: 3}
+  - {fileID: 5900657127075688870, guid: 8900653040b31fa4a9ff37b09903216f, type: 3}
+  - {fileID: 5900657127075688870, guid: 0fc81f8303739694f9e7db20a0341489, type: 3}
+  floorType: 0
