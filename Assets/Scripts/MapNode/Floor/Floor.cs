@@ -40,5 +40,33 @@ public class Floor : CustomUIComponent
     {
 
     }
-
+    
+    /// <summary>
+    /// 能否离开自身点位
+    /// </summary>
+    /// <param name="obstacle"></param>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    public virtual bool LeaveSelf(Direction direction)
+    {
+        return true;
+    }
+    /// <summary>
+    /// 是否可以通过
+    /// </summary>
+    /// <param name="obstacle"></param>
+    /// <param name="direction"></param>
+    /// <returns></returns>
+    public virtual PassState isCanPass(Direction direction)
+    {
+        return PassState.Pass;
+    }
+    /// <summary>
+    /// 是否接触会死亡
+    /// </summary>
+    /// <returns></returns>
+    public virtual bool isCanDead()
+    {
+        return false;
+    }
 }

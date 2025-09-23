@@ -39,4 +39,51 @@ public class CacheManager : SingletonData<CacheManager>
         o.transform.localEulerAngles = Vector3.zero;
         return o;
     }
+    
+    public void pushGameobject(string key, GameObject obj)
+    {
+        obj.transform.SetParent(this.cacheObject.transform);
+        var s = this.gameobjectStack.objectValue(key);
+        if (s == null)
+        {
+            s = new Stack<GameObject>();
+            this.gameobjectStack[key] = s;
+        }
+        s.Push(obj);
+    }
+    
+    // 停掉CustomUIComponent组件，回收GameObject
+    public void pushCompent<T>(string key, T o) where T : Component
+    {
+        foreach (var child in o.GetComponentsInChildren<CustomUIComponent>(true))
+        {
+            child.stopComponent(); 
+        }
+        this.pushGameobject(key, o.gameObject);
+    }
+    
+    public T popCompent<T>(string key, T prafab, Transform parent) where T : Component
+    {
+
+        var o = this.popGameObject(key, prafab.gameObject, parent);
+        var com = o.GetComponent<T>();
+        foreach (var child in com.GetComponentsInChildren<CustomUIComponent>(true))
+        {
+            if (child == null)
+            {
+                continue;
+            }
+            if (child.unused)
+            {
+                GameObject.DestroyImmediate(child.gameObject);
+            }
+        }
+
+        foreach (var child in com.GetComponentsInChildren<CustomUIComponent>(true))
+        {
+            child.startComponent();
+        }
+        return com;
+    }
+
 }

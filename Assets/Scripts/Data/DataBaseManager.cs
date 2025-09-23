@@ -3,8 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class DataBaseManager
+public class DataBaseManager: SingletonData<DataBaseManager>
 {
+    protected override void OnInit()
+    {
+       
+    }
+
+    public LevelData curLevelConfig;    // 关卡数据
+
 }
 public struct GridPos
 {
