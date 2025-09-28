@@ -7,9 +7,8 @@ public class MainData
     private DataBaseManager dataBaseMgr = DataBaseManager.Instance;
     public MainNode mainNode { get; private set; }
     
-    public MainData(MainNode mainNode)
+    public MainData()
     {
-        this.mainNode = mainNode;
         Instance = this;
     }
 

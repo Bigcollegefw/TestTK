@@ -1,18 +1,129 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using CustomJson;
 using UnityEngine;
 
-public class DataBaseManager: SingletonData<DataBaseManager>
+public partial class DataBaseManager: SingletonData<DataBaseManager>
 {
+    public bool loadOver { get; private set; }
+    
+    private string levelJson;
+    
     protected override void OnInit()
     {
        
     }
 
-    public LevelData curLevelConfig;    // 关卡数据
+    public void load()
+    {
+        this.loadOver = false;
+        this.levelJson = "level.json".loadResourceByAssetBundle<TextAsset>()?.text;
+        
+        if(!string.IsNullOrEmpty(this.levelJson))
+        {
+            try
+            {
+                var levelsArray = MiniJson.JsonDecode(this.levelJson) as List<object>;
+                if (levelsArray != null)
+                {
+                    _levelConfigs.Clear();
+                    foreach (var levelObj in levelsArray)
+                    {
+                        var levelDic = levelObj as Dictionary<string, object>;
+                        if (levelDic != null)
+                        {
+                            LevelData levelData = ParseLevelData(levelDic);
+                            if (levelData != null)
+                            {
+                                _levelConfigs.Add(levelData);
+                            }
+                        }
+                    }
 
+                    levelIdLimit = _levelConfigs.Count;
+                    Debug.Log($"成功加载 {_levelConfigs.Count} 个关卡");
+                }
+            }catch (Exception e)
+            {
+                Debug.LogError($"解析关卡数据失败: {e.Message}");
+            }
+            this.loadOver = true;
+        }
+    }
+    
+   
+
+    // 关卡配置，这个要从配置表中来读取的。
+    private List<LevelData> _levelConfigs = new List<LevelData>();
+
+    public List<LevelData> levelConfigs
+    {
+        get { return _levelConfigs; }
+    }
+    // 最大关卡号
+    private int _levelIdLimit;
+    public int levelIdLimit
+    {
+        get { return _levelIdLimit; }
+        set { _levelIdLimit = value; }
+    }
+    public int curLevel
+    {
+        get { return _curLevel; }
+        set { _curLevel = value; }
+    }
+    
+    // 当前关卡号
+    private int _curLevel = 1;
+    public LevelData curLevelConfig => GetCurLevelConfig();    // 关卡数据
+    private LevelData GetCurLevelConfig()
+    {
+        LevelData config =  _levelConfigs[_curLevel - 1]; 
+        FloorData[] floorDatas = config.mapData.floor;
+        var maxLength = config.col * config.row;
+        if (floorDatas.Length < maxLength)
+        {
+            // 创建一个新的地板数据数组
+            FloorData[] newFloorDatas = new FloorData[maxLength];
+            for (int i = 0; i < floorDatas.Length; i++)
+            {
+                newFloorDatas[i] = floorDatas[i];
+            }
+            HashSet<string> existingPositions = new HashSet<string>();
+            foreach (var floor in floorDatas)
+            {
+                existingPositions.Add($"{floor.pos.col}_{floor.pos.row}");
+            }
+            // 配置表不一定全部数据都会配置，所以要这里补全
+            int currentIndex = floorDatas.Length;
+            for (var i = 0; i < config.col; i++)
+            {
+                for (var j = 0; j < config.row; j++)
+                {
+                    string posKey = $"{i}_{j}";
+
+                    // 如果这个位置没有地板数据，就创建一个默认的
+                    if (!existingPositions.Contains(posKey))
+                    {
+                        FloorData defaultFloor = new FloorData
+                        {
+                            type = FloorType.FLOOR,  // 默认为普通地板类型(0)
+                            pos = new GridPos(i, j),
+                        };
+                        newFloorDatas[currentIndex] = defaultFloor;
+                        currentIndex++;
+                    }
+                }
+            }
+            // 更新配置中的地板数据
+            config.mapData.floor = newFloorDatas;
+        }
+        return config;
+    }
 }
+
 public struct GridPos
 {
     public int col;

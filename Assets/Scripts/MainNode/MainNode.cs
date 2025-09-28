@@ -4,5 +4,5 @@ using UnityEngine;
 
 public class MainNode
 {
-    
+    public static MainNode Instance;
 }

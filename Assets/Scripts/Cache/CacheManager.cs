@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 
-public class CacheManager : SingletonData<CacheManager>
+public partial class CacheManager : SingletonData<CacheManager>
 {    
     private GameObject cacheObject;
 
@@ -16,6 +16,7 @@ public class CacheManager : SingletonData<CacheManager>
         this.cacheObject.AddComponent<Canvas>();
         GameObject.DontDestroyOnLoad(this.cacheObject);
         this.cacheObject.SetActive(false);
+        initAssetBundle();
     }
     
     public GameObject popGameObject(string key, GameObject prafab, Transform parent)
