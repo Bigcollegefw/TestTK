@@ -14,7 +14,7 @@ public class ConfigLoadingObject : BaseLoadingObject
         Config, // 加载配置
         Over,
     }
-    private LoadingState _loadingState;
+    private LoadingState _loadingState; //其默认值为 LoadingState.None
 
     private LoadingState loadingState
     {
@@ -25,7 +25,13 @@ public class ConfigLoadingObject : BaseLoadingObject
             this._loadingState = value;
             if (this._loadingState == LoadingState.Config)
             {
-                DataBaseManager.Instance.load();
+                Debug.Log("开始调用DataBaseManager.load()"); // 新增日志
+                if (DataBaseManager.Instance == null)
+                {
+                    Debug.LogError("DataBaseManager.Instance为null，无法加载配置！");
+                    return;
+                }
+                DataBaseManager.Instance.load(); // 确保此处被执行
             }
             else if (this._loadingState == LoadingState.Over)
             {

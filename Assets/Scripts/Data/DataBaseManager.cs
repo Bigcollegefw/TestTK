@@ -13,7 +13,8 @@ public partial class DataBaseManager: SingletonData<DataBaseManager>
     
     protected override void OnInit()
     {
-       
+        Debug.Log("DataBaseManager初始化完成"); // 确认初始化被调用
+        _levelConfigs = new List<LevelData>(); // 确保集合已初始化
     }
 
     public void load()
@@ -53,8 +54,6 @@ public partial class DataBaseManager: SingletonData<DataBaseManager>
         }
     }
     
-   
-
     // 关卡配置，这个要从配置表中来读取的。
     private List<LevelData> _levelConfigs = new List<LevelData>();
 
@@ -69,17 +68,26 @@ public partial class DataBaseManager: SingletonData<DataBaseManager>
         get { return _levelIdLimit; }
         set { _levelIdLimit = value; }
     }
+    // 当前关卡号
+    private int _curLevel = 1;
     public int curLevel
     {
         get { return _curLevel; }
         set { _curLevel = value; }
     }
-    
-    // 当前关卡号
-    private int _curLevel = 1;
     public LevelData curLevelConfig => GetCurLevelConfig();    // 关卡数据
     private LevelData GetCurLevelConfig()
     {
+        if (_levelConfigs == null || _levelConfigs.Count == 0)
+        {
+            Debug.LogError("关卡配置列表为空，请检查配置加载流程！");
+            return null; // 或返回默认关卡数据
+        }
+        if (_curLevel < 1 || _curLevel > _levelConfigs.Count)
+        {
+            Debug.LogError($"当前关卡号{_curLevel}无效，超出配置范围（1-{_levelConfigs.Count}）");
+            return null; // 或返回默认关卡数据
+        }
         LevelData config =  _levelConfigs[_curLevel - 1]; 
         FloorData[] floorDatas = config.mapData.floor;
         var maxLength = config.col * config.row;

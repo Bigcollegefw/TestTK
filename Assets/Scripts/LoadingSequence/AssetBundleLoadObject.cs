@@ -2,8 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class AssetBundleLoadObject 
+public class AssetBundleLoadObject : BaseLoadingObject
 {
+    public AssetBundleLoadObject() : base()
+    {
+        this.modList = new List<string>();
+    }
+    
+    public override string desc => "LoadingAssetBundle";
     enum LoadState
     {
         None,
@@ -14,11 +20,11 @@ public class AssetBundleLoadObject
     private int maxCount;
     public bool isComplete { get; private set; }
     private List<string> modList;
-    private LoadState _loadState;
+    private LoadState _loadState; // 一开始的默认值是枚举值为0的值
     private LoadState loadState
     {
         get => this._loadState;
-        set
+        set //第一次主动修改 loadState 的值时，才会进入 set 访问器的逻辑。
         {
             if (this._loadState == value)
             {
@@ -58,6 +64,14 @@ public class AssetBundleLoadObject
             }
         }
     }
+
+    public override void start()
+    {
+        base.start();
+        this.loadState = LoadState.None;
+    }
+    
+    
     public void complete()
     {
         this.isComplete = true;

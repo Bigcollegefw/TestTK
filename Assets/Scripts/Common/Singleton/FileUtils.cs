@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -31,6 +32,21 @@ public class FileUtils : SingletonData<FileUtils>
                 callBack?.Invoke(str);
             }
         }
-        
+    }
+    
+    public void writeFileByStream(string path,string fileName, string value, bool append = false)
+    {
+        if (!Directory.Exists(path)) {
+            Directory.CreateDirectory(path);
+        }
+        var p = Path.Combine(path, fileName);
+        var sw = new StreamWriter(p, append, Encoding.UTF8);
+        //json方法写入
+        sw.Write(value);
+        //清空缓冲区
+        sw.Flush();
+        //关闭流
+        sw.Close();
+        sw.Dispose();
     }
 }

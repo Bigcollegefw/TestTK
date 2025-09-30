@@ -11,11 +11,7 @@ public class BaseUI : MonoBehaviour
 {
     protected IUIData uiData;
     public CanvasGroup canvasGroup { get; private set; }
-
-    public void Start()
-    {
-        OnStart(uiData);
-    }
+    
 
     public virtual void OnStart(IUIData uiData)
     {
