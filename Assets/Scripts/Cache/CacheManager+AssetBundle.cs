@@ -18,6 +18,8 @@ public partial class CacheManager
 
     void initAssetBundle()
     {
+        this.assetBundles = new Dictionary<string, (AssetBundle, Dictionary<string, object>)>();
+        this.assetBundleResources = new Dictionary<string, Dictionary<string, object>>();
         this.assetBundlePaths = new Dictionary<string, string>();
     }
     

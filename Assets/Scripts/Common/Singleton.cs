@@ -6,37 +6,34 @@
 using System;
 using UnityEngine;
 
-namespace TKFramework
+public abstract class Singleton<T> where T : class, new()
 {
-    public abstract class Singleton<T> where T : class, new()
-    {
 
-        //定义静态单例
-        protected static T _Instance = null;
-        public static T Instance
+    //定义静态单例
+    protected static T _Instance = null;
+    public static T Instance
+    {
+        get
         {
-            get
+            if (null == _Instance)
             {
-                if (null == _Instance)
-                {
-                    _Instance = new T();
-                }
-                return _Instance;
+                _Instance = new T();
             }
+            return _Instance;
         }
+    }
+
+    //初始化单例
+    protected Singleton()
+    {
+        //如果实例不为空，抛出异常
+        if (null != _Instance)
+            throw new SingletonException("This " + (typeof(T)).ToString() + " Singleton Instance is not null !!!");
 
         //初始化单例
-        protected Singleton()
-        {
-            //如果实例不为空，抛出异常
-            if (null != _Instance)
-                throw new SingletonException("This " + (typeof(T)).ToString() + " Singleton Instance is not null !!!");
-
-            //初始化单例
-            Init();
-        }
-
-        //初始化单例的内容
-        public virtual void Init() { }
+        Init();
     }
+
+    //初始化单例的内容
+    public virtual void Init() { }
 }

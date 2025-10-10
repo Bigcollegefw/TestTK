@@ -7,9 +7,12 @@ public class GameWindow : BaseUI
     public MapNode mapNode;
 
     public MainData mainData;
-    public override void OnStart(IUIData uiData)
+    
+    
+    
+    public override void start(IUIData uiData)
     { 
         this.mainData = new MainData();
-        base.OnStart(uiData);
+        base.start(uiData);
     }
 }

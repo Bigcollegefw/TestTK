@@ -11,9 +11,9 @@ public class BaseUI : MonoBehaviour
 {
     protected IUIData uiData;
     public CanvasGroup canvasGroup { get; private set; }
-    
+    public virtual UICanvasType uiCanvasType => UICanvasType.System;
 
-    public virtual void OnStart(IUIData uiData)
+    public virtual void start(IUIData uiData)
     {
         this.uiData = uiData;
         foreach (var obj in this.gameObject.GetComponentsInChildren<CustomUIComponent>(true))
@@ -30,5 +30,9 @@ public class BaseUI : MonoBehaviour
         {
             this.canvasGroup = this.gameObject.AddComponent<CanvasGroup>();
         }
+    }
+    
+    public virtual void update(float dt)
+    {
     }
 }

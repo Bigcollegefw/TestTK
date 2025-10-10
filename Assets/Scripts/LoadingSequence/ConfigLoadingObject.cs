@@ -43,9 +43,10 @@ public class ConfigLoadingObject : BaseLoadingObject
     public override void update(float dt)
     {
         base.update(dt);
+        Debug.Log("开始调用ConfigLoadingObject.update");
         if (this.loadingState == LoadingState.None)
         {
-            this.loadingState = LoadingState.Config;
+            this.loadingState = LoadingState.Config; 
         }else if (this.loadingState == LoadingState.Config)
         {
             if (DataBaseManager.Instance.loadOver)

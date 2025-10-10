@@ -13,6 +13,16 @@ public class GameCtrlStatus
 }
 public class GameCtrl : MonoBehaviour
 {
+    
+    [Header("UI层级")]
+    [SerializeField] private Canvas systemCanvas;
+    [SerializeField] private Canvas noneCanvas;
+    
+    private Dictionary<UICanvasType, Canvas> canvasMap;
+    public Canvas getCanvas(UICanvasType type) => this.canvasMap[type];
+    
+    public static GameCtrl instance;
+    
     private List<BaseLoadingObject> _loadingObjectList;
     private float totalLoadingCount;
     private float loadingDelay;
@@ -41,10 +51,20 @@ public class GameCtrl : MonoBehaviour
     }
     void Awake()
     {
+        instance = this;
         this._stateObject = new StateObject();
         this._loadingObjectList = new List<BaseLoadingObject>();
+        this.canvasMap = new Dictionary<UICanvasType, Canvas>();
+        
+        this.canvasMap[UICanvasType.None] = this.noneCanvas;
+
+        this.canvasMap[UICanvasType.System] = this.systemCanvas;
+
+        
         this.statusActions[GameCtrlStatus.Loading] = this.runLoading;
         this.updateActions[GameCtrlStatus.Loading] = this.updateLoading;
+        this.leaveActions[GameCtrlStatus.Loading] = this.leaveLoading;
+
     }
 
     void Start()
@@ -70,15 +90,16 @@ public class GameCtrl : MonoBehaviour
         {
             var o = DataUtils.Instance.getActivator<BaseLoadingObject>(className); // 创建一个对象
             o.start();
+            Debug.Log(o.toString());
             this._loadingObjectList.Add(o);
         }
         this.loadingDelay = 0.5f;
         this.totalLoadingCount = this._loadingObjectList.Count;
+        Debug.Log("加载出来了几个" + totalLoadingCount);
     }
 
     void updateLoading(float dt)
     {
-        Debug.Log("updateLoading");
         if (this._loadingObjectList.Count == 0)
         {
             this.loadingDelay -= dt;
@@ -96,6 +117,18 @@ public class GameCtrl : MonoBehaviour
             this._loadingObjectList.RemoveAt(0);
         }
     }
+
+    void leaveLoading()
+    {
+        Debug.Log("leaveLoading");
+        foreach (var o in this._loadingObjectList)
+        {
+            o.stop();
+        }
+        this._loadingObjectList.Clear();
+        UIManager.Instance.OpenUI<GameWindow>();
+    }
+    
     
     void stepComplete()
     {

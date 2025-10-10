@@ -18,7 +18,9 @@ public class AssetBundleLoadObject : BaseLoadingObject
         Over,
     }
     private int maxCount;
-    public bool isComplete { get; private set; }
+    
+    // public bool isComplete { get; private set; } //导致 AssetBundleLoadObject 中的 complete() 实际修改的是子类自己
+    // 的 isComplete，而 GameCtrl 在 updateLoading 中判断的是父类 BaseLoadingObject 的 isComplete（始终为 false）
     private List<string> modList;
     private LoadState _loadState; // 一开始的默认值是枚举值为0的值
     private LoadState loadState
@@ -61,21 +63,29 @@ public class AssetBundleLoadObject : BaseLoadingObject
             }else if (this._loadState == LoadState.Over)
             {
                 this.complete();
+                Debug.Log("AssetBundleLoadObject is complete");
             }
         }
     }
 
-    public override void start()
+    public override void update(float dt)
     {
-        base.start();
-        this.loadState = LoadState.None;
+        base.update(dt);
+
+        if (this.loadState == LoadState.None)
+        {
+            this.loadState = LoadState.PackPath;
+        }
+        else if (this.loadState == LoadState.Module)
+        {
+
+        }
+        else if (this.loadState == LoadState.Over)
+        {
+
+        }
     }
     
-    
-    public void complete()
-    {
-        this.isComplete = true;
-    }
     void tryLoadMod()
     {
         if (this.modList.Count == 0)
