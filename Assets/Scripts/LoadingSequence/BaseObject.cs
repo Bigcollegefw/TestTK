@@ -6,7 +6,6 @@ using UnityEngine;
 public class BaseObject
 {
     protected virtual bool needStatusObject => false; // 是否需要状态机
-    public MainNode mainNode => MainNode.Instance;
     
     protected StateObject stateObject;
     

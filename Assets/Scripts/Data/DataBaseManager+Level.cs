@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public partial class DataBaseManager
+public partial class DataBaseManager: SingletonData<DataBaseManager>
 {
+    private string levelJson;
+    
      // 解析LevelData的方法
     private LevelData ParseLevelData(Dictionary<string, object> levelDic)
     {
@@ -12,7 +14,7 @@ public partial class DataBaseManager
         {
             LevelData levelData = new LevelData();
 
-            // 解析基本属性
+            // 解析基本属性,这个时候的levelDic字典里面就有很多键值对 如：“mapData”:具体的内容,"id":1；
             if (levelDic.ContainsKey("id"))
                 levelData.id = Convert.ToInt32(levelDic["id"]);
 
@@ -49,7 +51,7 @@ public partial class DataBaseManager
             // 解析地图数据
             if (levelDic.ContainsKey("mapData"))
             {
-                var mapDic = levelDic["mapData"] as Dictionary<string, object>;
+                var mapDic = levelDic["mapData"] as Dictionary<string, object>; 
                 if (mapDic != null)
                 {
                     levelData.mapData = ParseMapData(mapDic);
@@ -70,6 +72,7 @@ public partial class DataBaseManager
     {
         try
         {
+            //// 这个时候的字典里面就有很多键值对 如：“floor”:floor的type和pos,"obstacle":obstacle的type和pos
             MapData mapData = new MapData();
             if (mapDic.ContainsKey("floor"))
             {
@@ -99,7 +102,7 @@ public partial class DataBaseManager
                         var obstacleObj = obstacleArray[i] as Dictionary<string, object>;
                         if (obstacleObj != null)
                         {
-                            //mapData.obstacle[i] = ParseObstacleData(obstacleObj);
+                            mapData.obstacle[i] = ParseObstacleData(obstacleObj);
                         }
                     }
                 }
@@ -116,7 +119,7 @@ public partial class DataBaseManager
                         var pointObj = pointArray[i] as Dictionary<string, object>;
                         if (pointObj != null)
                         {
-                            //mapData.point[i] = ParsePointData(pointObj);
+                            mapData.point[i] = ParsePointData(pointObj);
                         }
                     }
                 }
@@ -132,6 +135,7 @@ public partial class DataBaseManager
         // 添加解析其他数据类型的辅助方法
     private FloorData ParseFloorData(Dictionary<string, object> floorDic)
     {
+        //这个时候的字典里面就有很多键值对 如：“type”:4,"pos":[0,0]
         FloorData floorData = new FloorData();
         if (floorDic.ContainsKey("type"))
             floorData.type = (FloorType)Convert.ToInt32(floorDic["type"]);
@@ -211,5 +215,75 @@ public partial class DataBaseManager
             floorData.rotation = Convert.ToInt32(floorDic["rotation"]);
         }
         return floorData;
+    }
+
+    private ObstacleData ParseObstacleData(Dictionary<string, object> obstacleDic)
+    {
+        ObstacleData obstacleData = new ObstacleData();
+        // 这个时候的字典里面就有很多键值对 如：“type”:4,"pos":[0,0]
+        if (obstacleDic.ContainsKey("type"))
+        {
+            obstacleData.type = (ObstacleType)Convert.ToInt32(obstacleDic["type"]);
+        }
+        if (obstacleDic.ContainsKey("pos"))
+        {
+            var posArray = obstacleDic["pos"] as List<object>;
+            if (posArray != null && posArray.Count >= 2)
+            {
+                obstacleData.pos = new GridPos(
+                    Convert.ToInt32(posArray[0]),
+                    Convert.ToInt32(posArray[1])
+                );
+            }
+        }
+        return obstacleData;
+    }
+
+    private PointData ParsePointData(Dictionary<string, object> pointDic)
+    {
+        PointData pointData = new PointData();
+        // 这个时候的字典里面就有很多键值对 如：“type”:4,"pos":[0,0]
+        if(pointDic.ContainsKey("type"))
+        {
+            pointData.level = (PointLevel)Convert.ToInt32(pointDic["type"]);
+        }
+        // 这里配置的时候可能“type”:4,"pos":[[x1,y1], [x2,y2], ...]，所以要多考虑一种情况
+        if (pointDic.ContainsKey("pos"))
+        {
+            var posArray = pointDic["pos"] as List<object>;
+            if (posArray != null && posArray.Count > 0)
+            {
+                var firstElement = posArray[0];
+                if (firstElement is List<object>)
+                {
+                    // 多个位置的情况：[[x1,y1], [x2,y2], ...]
+                    pointData.pos = new GridPos[posArray.Count];
+                    for (int i = 0; i < posArray.Count; i++)
+                    {
+                        var singlePos = posArray[i] as List<object>;
+                        if (singlePos != null && singlePos.Count >= 2)
+                        {
+                            pointData.pos[i] = new GridPos(
+                                Convert.ToInt32(singlePos[0]),
+                                Convert.ToInt32(singlePos[1])
+                            );
+                        }
+                    }
+                }
+                else
+                {
+                    // 单个位置的情况：[x, y]
+                    if (posArray.Count >= 2)
+                    {
+                        pointData.pos = new GridPos[1];
+                        pointData.pos[0] = new GridPos(
+                            Convert.ToInt32(posArray[0]),
+                            Convert.ToInt32(posArray[1])
+                        );
+                    }
+                }
+            }
+        }
+        return pointData;
     }
 }

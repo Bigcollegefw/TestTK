@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public enum PassState
@@ -12,6 +14,7 @@ public enum PassState
 /// </summary>
 public class FloorNode : CustomUIComponent
 {
+    public List<GameObject> prefabs;
     /// <summary>
     /// 地块数据
     /// </summary>
@@ -36,9 +39,12 @@ public class FloorNode : CustomUIComponent
     public void InitFloorNode(FloorData data)
     {
         this.Reset();
-        this.fData = data.DeepCopy();
+        this.fData = data.DeepCopy(); // 这里为什么需要深拷贝？我应该直接传fData.type就不用多这一步了
         this.floorType = fData.type;
         this.targetFloorNode = mainData.GetFloorNodeAtGrid(fData.target.col, fData.target.row);
+        GameObject floorPrefab = this.prefabs[this.floorType.toInt()]; // 根据预制体加载出具体的地板节点
+        this.floor = CacheManager.Instance.popCompent<Floor>(this.floorType.toString(), 
+            floorPrefab.GetComponent<Floor>(), this.transform);
     }
     
     public void Reset()
@@ -52,7 +58,7 @@ public class FloorNode : CustomUIComponent
     /// <returns></returns>
     public bool LeaveSelf(Direction direction)
     {
-        return this.floor.LeaveSelf(direction);
+        return this.floor.LeaveSelf(GetCombinedObstacle(),direction);
     }
     /// <summary>
     /// 是否可以通过
@@ -61,9 +67,9 @@ public class FloorNode : CustomUIComponent
     /// <param name="obNode"></param>
     /// <param name="ptNode"></param>
     /// <returns></returns>
-    public PassState isCanPass(Direction direction)
+    public PassState isCanPass(Direction direction,ObstacleNode obNode = null,PointNode ptNode = null)
     {
-        return this.floor.isCanPass(direction);
+        return this.floor.isCanPass(GetCombinedObstacle(), direction, obNode, ptNode);
     }
     /// <summary>
     /// 是否接触会死亡
@@ -74,4 +80,19 @@ public class FloorNode : CustomUIComponent
         return this.floor.isCanDead();
     }
 
+    public int[] GetCombinedObstacle()
+    {
+        HashSet<int> combinedSet = new HashSet<int>();  
+        
+        // 添加原始阻挡方向
+        if (fData != null && fData.obstacle != null)
+        {
+            foreach (int ob in fData.obstacle)
+            {
+                combinedSet.Add(ob);    
+            }
+        }
+        return combinedSet.ToArray();
+    }
+    
 }

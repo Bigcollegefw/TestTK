@@ -18,6 +18,8 @@ public class TouchNode : CustomUIComponent
 {
     public MapNode mapNode; // 地图节点
     
+    private MainData mainData => MainData.Instance;
+    
     private Vector2 touchStartPos; // 触摸开始的位置
     private Vector2 touchCurrentPos; // 触摸结束的位置
     private bool isDragging = false;    // 是否在拖拽中
@@ -259,7 +261,9 @@ public class TouchNode : CustomUIComponent
     // 获取玩家当前位置的世界坐标
     private Vector2 GetPlayerWorldPosition()
     {
-        return new Vector2(Camera.main.transform.position.x, Camera.main.transform.position.y);
+        int col = this.mainData.playerGrid.col;
+        int row = this.mainData.playerGrid.row;
+        return this.mainData.GetVector2(col, row);
     }
     
     // 根据方向获取旋转角度

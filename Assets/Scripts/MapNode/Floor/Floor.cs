@@ -47,7 +47,7 @@ public class Floor : CustomUIComponent
     /// <param name="obstacle"></param>
     /// <param name="direction"></param>
     /// <returns></returns>
-    public virtual bool LeaveSelf(Direction direction)
+    public virtual bool LeaveSelf(int[] obstacle,Direction direction)
     {
         return true;
     }
@@ -57,7 +57,7 @@ public class Floor : CustomUIComponent
     /// <param name="obstacle"></param>
     /// <param name="direction"></param>
     /// <returns></returns>
-    public virtual PassState isCanPass(Direction direction)
+    public virtual PassState isCanPass(int[] obstacle, Direction direction, ObstacleNode obNode = null, PointNode ptNode = null)
     {
         return PassState.Pass;
     }
@@ -65,8 +65,21 @@ public class Floor : CustomUIComponent
     /// 是否接触会死亡
     /// </summary>
     /// <returns></returns>
-    public virtual bool isCanDead()
+    public virtual bool isCanDead(PointNode ptNode = null)
     {
         return false;
+    }
+    
+    // 是否能够穿过point点
+    public virtual PassState PtPass(PointNode ptNode)
+    {
+        if (ptNode != null)
+        {
+            return PassState.Stay;
+        }
+        else
+        {
+            return PassState.Pass;
+        }
     }
 }

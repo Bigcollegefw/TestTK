@@ -49,5 +49,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   unused: 0
+  prefabs:
+  - {fileID: 5900657127075688870, guid: 52e61555b4dc04c4695245da699f0aa4, type: 3}
+  - {fileID: 5900657127075688870, guid: 967a7c2db26520d4e8bbe97a5a67a631, type: 3}
+  - {fileID: 5900657127075688870, guid: 6ec616b22686c3040b587f0ee57d7149, type: 3}
+  - {fileID: 5900657127075688870, guid: 6cd0c5f845fa6fc46b0be4f51d38c44c, type: 3}
+  - {fileID: 5900657127075688870, guid: 1a0f34abea8fbff43b2dec372274bc18, type: 3}
+  - {fileID: 5900657127075688870, guid: d2d12d794aa006544961d8a0362078d8, type: 3}
+  - {fileID: 5900657127075688870, guid: 636e086f37e37ce4a896899f92df6226, type: 3}
+  - {fileID: 5900657127075688870, guid: e6fcd3426606cba4f8b384ea8c78fc46, type: 3}
+  - {fileID: 5900657127075688870, guid: 8900653040b31fa4a9ff37b09903216f, type: 3}
+  - {fileID: 5900657127075688870, guid: 0fc81f8303739694f9e7db20a0341489, type: 3}
   floorType: 0
   targetFloorNode: {fileID: 0}

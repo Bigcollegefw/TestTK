@@ -9,7 +9,7 @@ public partial class DataBaseManager: SingletonData<DataBaseManager>
 {
     public bool loadOver { get; private set; }
     
-    private string levelJson;
+
     
     protected override void OnInit()
     {
@@ -88,6 +88,7 @@ public partial class DataBaseManager: SingletonData<DataBaseManager>
             Debug.LogError($"当前关卡号{_curLevel}无效，超出配置范围（1-{_levelConfigs.Count}）");
             return null; // 或返回默认关卡数据
         }
+        
         LevelData config =  _levelConfigs[_curLevel - 1]; 
         FloorData[] floorDatas = config.mapData.floor;
         var maxLength = config.col * config.row;

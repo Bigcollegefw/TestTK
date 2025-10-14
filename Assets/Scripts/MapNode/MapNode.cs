@@ -17,6 +17,8 @@ public class MapNode : CustomUIComponent
     [Header("预制件")]
     [SerializeField] private FloorNode floorPrefab; // 地板预制件
     [SerializeField] private PlayerNode playerPrefab; // 玩家预制件
+    [SerializeField] private ObstacleNode obstaclePrefab; // 障碍物预制件
+    [SerializeField] private PointNode pointPrefab; // 点位预制件
     
     public override void startComponent()
     {
@@ -45,6 +47,8 @@ public class MapNode : CustomUIComponent
         var curLevelConfig = DataBaseManager.Instance.curLevelConfig;   
         this.CreateFloorChildren(curLevelConfig);
         this.CreatePlayer(curLevelConfig);
+        this.CreateObstacleChildren(curLevelConfig);
+        this.CreatePointChildren(curLevelConfig);
     }
 
     public void CreateFloorChildren(LevelData levelData)
@@ -64,6 +68,62 @@ public class MapNode : CustomUIComponent
             if (rectTransform != null)
             {
                 rectTransform.anchoredPosition = position;
+            }
+        }
+    }
+
+    public void CreateObstacleChildren(LevelData levelData)
+    {
+        if (levelData.mapData == null || levelData.mapData.obstacle == null) return;
+
+        foreach (var obstacleData in levelData.mapData.obstacle)
+        {
+            int obsCol = obstacleData.pos.col;
+            int obsRow = obstacleData.pos.row;
+            Vector2 position = mainData.GetVector2(obsCol, obsRow);
+            
+            ObstacleNode obstacleNode = CacheManager.Instance.popCompent<ObstacleNode>(
+                typeof(ObstacleNode).toString(), 
+                obstaclePrefab, 
+                ObstacleLayer.transform);
+            mainData.obstacleNodes.Add(obstacleNode,new GridPos(obsCol, obsRow));   
+            obstacleNode.InitObstacleNode(obstacleData.type);
+            
+            RectTransform rt = obstacleNode.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.anchoredPosition = position;
+            }
+        }
+    }
+
+    public void CreatePointChildren(LevelData levelData)
+    {
+        if (levelData.mapData == null || levelData.mapData.obstacle == null) return;
+
+        for (var s = 0; s < levelData.mapData.point.Length; s++)
+        { 
+            PointData pointData = levelData.mapData.point[s];
+            if (pointData.pos == null || pointData.pos.Length == 0) continue;
+
+            for (int i = 0; i < pointData.pos.Length; i++)
+            {
+                int pointCol = pointData.pos[i].col;
+                int pointRow = pointData.pos[i].row;
+                
+                Vector2 position = mainData.GetVector2(pointCol, pointRow);
+                PointNode pointNode = CacheManager.Instance.popCompent<PointNode>(
+                    typeof(PointNode).toString(),
+                    pointPrefab, 
+                    PointLayer.transform);
+                mainData.pointNodes.Add(pointNode, new GridPos(pointCol, pointRow));
+                pointNode.InitPointNode(pointData.level, s);  // 设置点位信息。
+                
+                RectTransform rt = pointNode.GetComponent<RectTransform>();
+                if (rt != null)
+                {
+                    rt.anchoredPosition = position;
+                }
             }
         }
     }
@@ -101,6 +161,12 @@ public class MapNode : CustomUIComponent
             CacheManager.Instance.pushCompent<FloorNode>(typeof(FloorNode).toString(), floorNode);
         }
         mainData.floorNodes.Clear();
+        
+        foreach (var obstacleNode in mainData.obstacleNodes.Keys)
+        {
+            CacheManager.Instance.pushCompent<ObstacleNode>(typeof(ObstacleNode).toString(), obstacleNode);
+        }
+        mainData.obstacleNodes.Clear();
     }
     
     
@@ -144,7 +210,8 @@ public class MapNode : CustomUIComponent
     public void MovePlayerToPosition(int col, int row, Action cb = null)
     {
         if (mainData.player == null) return;
-
+        mainData.targetGrid = new GridPos(col, row);
+        mainData.targetPos = mainData.GetVector2(col, row);
         if (mainData.hasStepLimit && mainData.remainStep > 0) // 是否有步数限制且剩余步数大于0
         {
             mainData.remainStep -= 1;
@@ -214,6 +281,8 @@ public class MapNode : CustomUIComponent
             }
             
             FloorNode floorNode = mainData.GetFloorNodeAtGrid(nextCol, nextRow);
+            ObstacleNode obstacleNode = mainData.GetObstacleNodeAtGrid(nextCol, nextRow);
+            PointNode pointNode = mainData.GetPointNodeAtGrid(nextCol, nextRow);
             // 如果没有找到FloorNode，说明该位置不可通行
             if (floorNode == null)
             {
@@ -221,11 +290,11 @@ public class MapNode : CustomUIComponent
             }
             
             // 检查FloorNode是否可通过
-            if (floorNode.isCanPass(direction) == PassState.Dont)
+            if (floorNode.isCanPass(direction, obstacleNode, pointNode) == PassState.Dont)
             {
                 return new GridPos(lastValidCol, lastValidRow);
             }
-            else if (floorNode.isCanPass(direction) == PassState.Stay)
+            else if (floorNode.isCanPass(direction, obstacleNode, pointNode) == PassState.Stay)
             {
                 // 检查FloorNode是否会导致死亡
                 if (floorNode.isCanDead())
@@ -244,5 +313,29 @@ public class MapNode : CustomUIComponent
         }
         // 达到最大步数仍未终止，返回最后有效位置（避免无限循环）
         return new GridPos(lastValidCol, lastValidRow);
+    }
+
+    /// <summary>
+    /// 停下来之后检查游戏的结果
+    /// </summary>
+    public void CheckGameResult()
+    {
+        if (mainData.playerDead)
+        {
+            // 玩家死亡
+            mainData.gameResult = GameResult.fail;
+            Debug.Log("Game Over"); 
+            return;
+        }
+
+        if (mainData.arriveEnd)
+        {
+            mainData.gameResult = GameResult.win;
+            Debug.Log("Game Win"); 
+            return;
+        }
+        
+        // TODO 步数限制和事件限制。
+        touchNode.enableTouchEvents = true;
     }
 }

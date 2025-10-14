@@ -12,7 +12,6 @@ public class GameWindow : BaseUI
     
     public override void start(IUIData uiData)
     { 
-        this.mainData = new MainData();
         base.start(uiData);
     }
 }

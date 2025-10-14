@@ -13,6 +13,7 @@ public class GameCtrlStatus
 }
 public class GameCtrl : MonoBehaviour
 {
+    private MainNode _mainNode;
     
     [Header("UI层级")]
     [SerializeField] private Canvas systemCanvas;
@@ -52,6 +53,7 @@ public class GameCtrl : MonoBehaviour
     void Awake()
     {
         instance = this;
+        this._mainNode = new MainNode();
         this._stateObject = new StateObject();
         this._loadingObjectList = new List<BaseLoadingObject>();
         this.canvasMap = new Dictionary<UICanvasType, Canvas>();
@@ -126,7 +128,7 @@ public class GameCtrl : MonoBehaviour
             o.stop();
         }
         this._loadingObjectList.Clear();
-        UIManager.Instance.OpenUI<GameWindow>();
+        _mainNode.ShowGameWindow();
     }
     
     

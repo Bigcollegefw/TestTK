@@ -1,14 +1,23 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
-public class MainData
+public enum GameResult
+{
+    // 游戏中
+    common,
+    // 胜利
+    win,
+    // 失败
+    fail
+}
+public partial class MainData
 {
     private DataBaseManager dataBaseMgr = DataBaseManager.Instance;
     public MainNode mainNode { get; private set; }
     
-    public MainData()
+    public MainData(MainNode mainNode)
     {
+        this.mainNode = mainNode;
         Instance = this;
     }
 
@@ -18,6 +27,9 @@ public class MainData
     
     public Dictionary<FloorNode, GridPos> floorNodes = new Dictionary<FloorNode, GridPos>(); // 存所有的floorNode
     
+    public Dictionary<ObstacleNode, GridPos> obstacleNodes = new Dictionary<ObstacleNode, GridPos>();
+    
+    public Dictionary<PointNode, GridPos> pointNodes = new Dictionary<PointNode, GridPos>();
     // 玩家当前位置格子点
     private GridPos _playerGrid;
     public GridPos playerGrid
@@ -74,6 +86,16 @@ public class MainData
         get { return _remainStep; }
         set { _remainStep = value; }
     }
+    // 游戏结果
+    private GameResult _gameResult = GameResult.common;
+    public GameResult gameResult
+    {
+        get { return _gameResult; }
+        set
+        {
+            _gameResult = value;
+        }
+    }
     
     /// <summary>
     /// 通过格子坐标转为实际坐标
@@ -99,18 +121,5 @@ public class MainData
         return new Vector2(posX, posY);
     }
     
-    /// <summary>
-    /// 根据位置获取FloorNode
-    /// </summary>
-    public FloorNode GetFloorNodeAtGrid(int col, int row)
-    {
-        foreach (var kvp in floorNodes)
-        {
-            if (kvp.Value.col == col && kvp.Value.row == row)
-            {
-                return kvp.Key;
-            }
-        }
-        return null;
-    }
+
 }

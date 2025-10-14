@@ -47,12 +47,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 5900657127075688870}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3e48d573f8547954183c2ba638ba31cb, type: 3}
+  m_Script: {fileID: 11500000, guid: 4104fed8329b98440bce4feb177992b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   unused: 0
   floorType: 7
-  txt: {fileID: 7021271686910244975}
+  parentTransform: {fileID: 0}
+  parentFloorNode: {fileID: 0}
 --- !u!1 &7119240935939432954
 GameObject:
   m_ObjectHideFlags: 0
