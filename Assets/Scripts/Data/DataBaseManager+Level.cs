@@ -7,6 +7,34 @@ public partial class DataBaseManager: SingletonData<DataBaseManager>
 {
     private string levelJson;
     
+    /// <summary>
+    /// 获取本关卡玩家初始等级
+    /// </summary>
+    /// <returns></returns>
+    public PointLevel GetPlayerLevel()
+    {
+        return this.curLevelConfig.playerLevel;
+    }
+
+    /// <summary>
+    /// 获取本关卡玩家等级上限
+    /// </summary>
+    /// <returns></returns>
+    public PointLevel GetMaxPlayerLevel()
+    {
+        var list = this.curLevelConfig.mapData.point;
+        var max = PointLevel.A;
+        for (var i = 0; i < list.Length; i++)
+        {
+            if (list[i].level >= max)
+            {
+                max = list[i].level;
+            }
+        }
+        return max;
+    }
+    
+    
      // 解析LevelData的方法
     private LevelData ParseLevelData(Dictionary<string, object> levelDic)
     {

@@ -11,13 +11,36 @@ public partial class MainData
         get { return _playerLevel; }
         set { _playerLevel = value; }
     }
-    
+    // 最大玩家等级
+    private PointLevel _maxPlayerLevel;
+    public PointLevel maxPlayerLevel
+    {
+        get { return _maxPlayerLevel; }
+        set { _maxPlayerLevel = value; }
+    }
     // 玩家是否到达终点或将到达终点
     private bool _arriveEnd;
     public bool arriveEnd
     {
         get { return _arriveEnd; }
         set { _arriveEnd = value; }
+    }
+
+    public void InitGameData()
+    {
+        this.gameResult = GameResult.common;
+        this.playerGrid = new GridPos(0, 0);
+        this.targetGrid = this.playerGrid;
+        this.isMoving = false;
+        this.playerDead = false;
+        this.arriveEnd = false;
+        this.playerLevel = dataBaseMgr.GetPlayerLevel();
+        this.maxPlayerLevel = dataBaseMgr.GetMaxPlayerLevel();
+    }
+    
+    public void stopGameData()
+    {
+        // CustomGlobalConfig.IsInGame = false;
     }
     
     

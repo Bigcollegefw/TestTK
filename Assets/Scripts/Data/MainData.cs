@@ -25,7 +25,7 @@ public partial class MainData
 
     public PlayerNode player;    // 玩家节点
     
-    public Dictionary<FloorNode, GridPos> floorNodes = new Dictionary<FloorNode, GridPos>(); // 存所有的floorNode
+    public Dictionary<FloorNode, GridPos> floorNodes = new Dictionary<FloorNode, GridPos>(); // 存所有生成的floorNode
     
     public Dictionary<ObstacleNode, GridPos> obstacleNodes = new Dictionary<ObstacleNode, GridPos>();
     

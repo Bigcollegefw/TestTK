@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FloorEdge : Floor
+public class FloorEdge : FloorCommon
 {
     public List<GameObject> BgList;
 

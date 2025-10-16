@@ -43,6 +43,12 @@ public class UIManager : Singleton<UIManager>
         foreach (var ui in tempUIList)
         {
             ui.update(deltaTime);
+            if (ui.deleteLater)
+            {
+                this.onCloseUIAction?.Invoke(ui);
+                ui.Release();
+                this.tempDeleteUIList.Add(ui);
+            }
         }
 
         if (this.tempDeleteUIList.Count > 0)

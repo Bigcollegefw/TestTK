@@ -81,6 +81,7 @@ public class GameCtrl : MonoBehaviour
             this.isStepComplete = false;
             this.baseState += 1;
         }
+        UIManager.Instance.update(Time.deltaTime);
     }
 
     

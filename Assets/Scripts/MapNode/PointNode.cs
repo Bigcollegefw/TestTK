@@ -21,7 +21,7 @@ public class PointNode : MonoBehaviour
 
     public void SetPointType(PointLevel pointType)
     {
-        pointType = pointType;
+        this.pointType = pointType; // 这里我一开始没有加this。。导致这个脚本的pointType没有变化。
         this.pointText.text = pointType.toInt().ToString(); //显示的是枚举的数值
     }
     

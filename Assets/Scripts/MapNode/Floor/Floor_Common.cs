@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class FloorCommon : Floor
 {
-    public List<GameObject> floorSprites;
 
     public override void InitFloor()
     {
@@ -20,7 +19,7 @@ public class FloorCommon : Floor
         {
             return PassState.Dont;  //Dont = 0,不能进入
         }
-        //public int[] obstacle { get; set; } // 边缘障碍物方位，不占格子，0上，1右，2下，3右
+        //public int[] obstacle { get; set; } 边缘障碍物方位，不占格子，0上，1右，2下，3右
         if (obstacle != null && obstacle.Length > 0)
         {
             if (direction == Direction.Up)

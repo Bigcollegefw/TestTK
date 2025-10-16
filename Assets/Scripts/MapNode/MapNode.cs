@@ -167,6 +167,11 @@ public class MapNode : CustomUIComponent
             CacheManager.Instance.pushCompent<ObstacleNode>(typeof(ObstacleNode).toString(), obstacleNode);
         }
         mainData.obstacleNodes.Clear();
+        foreach (var pointNode in mainData.pointNodes.Keys)
+        {
+            CacheManager.Instance.pushCompent<PointNode>(typeof(PointNode).toString(), pointNode);
+        }
+        mainData.pointNodes.Clear();
     }
     
     
@@ -189,7 +194,7 @@ public class MapNode : CustomUIComponent
         {
             if (addWayPoint)
             {
-                //mainData.AddWayPoint(mainData.playerGrid);
+                //mainData.AddWayPoint(mainData.playerGrid); // 途径点位可能用于悔步
             }
             // 移动玩家到新位置
             MovePlayerToPosition(targetGrid.col, targetGrid.row);
@@ -297,7 +302,7 @@ public class MapNode : CustomUIComponent
             else if (floorNode.isCanPass(direction, obstacleNode, pointNode) == PassState.Stay)
             {
                 // 检查FloorNode是否会导致死亡
-                if (floorNode.isCanDead())
+                if (floorNode.isCanDead(pointNode))
                 {
                     mainData.playerDead = true;
                 }
@@ -324,18 +329,66 @@ public class MapNode : CustomUIComponent
         {
             // 玩家死亡
             mainData.gameResult = GameResult.fail;
-            Debug.Log("Game Over"); 
+            Debug.Log("Game Fail"); 
             return;
         }
-
+        this.CheckPlayerLevel();
         if (mainData.arriveEnd)
         {
             mainData.gameResult = GameResult.win;
-            Debug.Log("Game Win"); 
+            UIManager.Instance.OpenUI<WinUI>();
             return;
         }
         
         // TODO 步数限制和事件限制。
         touchNode.enableTouchEvents = true;
+    }
+
+    public void CheckPlayerLevel()
+    {
+        int curCol = mainData.playerGrid.col;
+        int curRow = mainData.playerGrid.row;
+        PointNode curPoint = mainData.GetPointNodeAtGrid(curCol, curRow);
+        if (curPoint != null && curPoint.GetPointType() == mainData.playerLevel)
+        {
+            int commonId = curPoint.commonId;
+            List<PointNode> list = new List<PointNode>();
+            foreach (var p in mainData.pointNodes.Keys)
+            {
+                // 标识id相同，是同一组，同时消除
+                if (p.commonId == commonId)
+                {
+                    list.Add(p);
+                }
+            }
+            foreach (var c in list)
+            {
+                mainData.pointNodes.Remove(c);
+                CacheManager.Instance.pushCompent<PointNode>(typeof(PointNode).toString(), c);
+            }
+        }
+
+        bool hasSameLevelPoint = false;
+        PointLevel currentLevelInt = mainData.playerLevel;
+        
+        foreach (var kvp in mainData.pointNodes)
+        {
+            PointNode pointNode = kvp.Key;
+            if (pointNode != null && pointNode.GetPointType() == currentLevelInt)
+            {
+                hasSameLevelPoint = true;
+                break;
+            }
+        }
+
+        if (!hasSameLevelPoint && mainData.playerLevel < mainData.maxPlayerLevel)
+        {
+            mainData.playerLevel = (PointLevel)(mainData.playerLevel.toInt() + 1);
+        }
+
+        if (mainData.pointNodes.Count == 0)
+        {
+            mainData.arriveEnd = true;
+        }
     }
 }

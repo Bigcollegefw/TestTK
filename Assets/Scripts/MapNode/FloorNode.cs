@@ -49,7 +49,12 @@ public class FloorNode : CustomUIComponent
     
     public void Reset()
     {
-       
+        if (this.floor != null)
+        {
+            CacheManager.Instance.pushCompent<Floor>(this.floorType.toString(), this.floor);
+            this.floor = null;  
+        }
+        
     }
     
     /// <summary>
@@ -75,9 +80,9 @@ public class FloorNode : CustomUIComponent
     /// 是否接触会死亡
     /// </summary>
     /// <returns></returns>
-    public bool isCanDead()
+    public bool isCanDead(PointNode ptNode = null)
     {
-        return this.floor.isCanDead();
+        return this.floor.isCanDead(ptNode);
     }
 
     public int[] GetCombinedObstacle()
