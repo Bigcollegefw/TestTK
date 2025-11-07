@@ -10,6 +10,8 @@ public class GameWindow : BaseUI
     
     public Button RestartButton;
     public Button ContinueBtn;
+    public Button AutoPlayBtn;
+    
     
     public override void start(IUIData uiData)
     { 
@@ -17,12 +19,58 @@ public class GameWindow : BaseUI
                                       // 因为在base.start里面会初始化地图，
                                       // 数据都是直接从DatabaseManager取的
         base.start(uiData);
+        
+        LevelData levelData = DataBaseManager.Instance.curLevelConfig;
+        TKSolverManager.Instance.Initialize(levelData);
+        
         RestartButton.onClick.AddListener(restartBtnClick);
         ContinueBtn.onClick.AddListener(continueBtnClick);
+        AutoPlayBtn.onClick.AddListener(TipBtnClick);
     }
 
+    public void TipBtnClick()
+    {
+        // 调用求解器获取提示
+        TKSolverManager.Instance.ProvideRealTimeHint(mainData, hint =>
+        {
+            if (hint != null)
+            {
+                ShowHintVisual(hint); ;
+            }
+            else
+            {
+                Debug.LogWarning("[提示灯] 当前状态无解");
+            }
+        });
+    }
+
+    private void ShowHintVisual(MoveHint hint)
+    {
+        Debug.Log($"[提示灯] 建议移动方向: {hint.Direction}, 置信度: {hint.Confidence}");
+        
+        string directionText = GetDirectionText(hint.Direction);
+        Debug.Log($"💡 提示：向{directionText}移动");
+    }
+    
+    /// <summary>
+    /// 获取方向文本
+    /// </summary>
+    private string GetDirectionText(Direction direction)
+    {
+        switch (direction)
+        {
+            case Direction.Up: return "上";
+            case Direction.Down: return "下";
+            case Direction.Left: return "左";
+            case Direction.Right: return "右";
+            default: return "未知";
+        }
+    }
     protected override void stop() //游戏界面被关闭时候触发
     {
+        RestartButton.onClick.RemoveAllListeners();
+        ContinueBtn.onClick.RemoveAllListeners();
+        AutoPlayBtn.onClick.RemoveAllListeners();
         this.mainData.stopGameData();
         base.stop();
     }

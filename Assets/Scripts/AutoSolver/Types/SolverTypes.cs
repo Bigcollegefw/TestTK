@@ -10,7 +10,7 @@ public class TKGameState
 
     public Direction PlayerDirection;//玩家朝向
     
-    public HashSet<string> CollectedPointGroups;
+    public HashSet<string> CollectedPointGroups; // 点位组，好几个为1个点位组
 
     public HashSet<PointLevel> UnlockedLevels;// 已解锁的等级
 
@@ -54,6 +54,19 @@ public class Solution
     public float ComputationTime;   // 计算耗时（毫秒）
     public bool IsOptimal; // 是否为最优解
 }
+
+// 移动提示
+public class MoveHint
+{
+    public Direction Direction;           // 建议的移动方向
+    public float Confidence;              // 置信度 (0-1)
+    public string Reason;                 // 提示原因
+    public int[] TargetPosition;          // 目标位置
+    public bool IsPartOfOptimalPath;      // 是否为最优路径的一部分
+}
+
+
+
 
 // 求解器配置
 public class SolverConfig

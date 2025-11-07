@@ -25,7 +25,17 @@ public partial class MainData
         get { return _arriveEnd; }
         set { _arriveEnd = value; }
     }
-
+    
+    /// <summary>
+    /// 玩家当前朝向（求解器需要）
+    /// </summary>
+    private Direction _playerDirection = Direction.None;
+    public Direction playerDirection
+    {
+        get { return _playerDirection; }
+        set { _playerDirection = value; }
+    }
+    
     public void InitGameData()
     {
         this.gameResult = GameResult.common;

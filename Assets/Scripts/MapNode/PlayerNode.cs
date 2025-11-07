@@ -68,4 +68,5 @@ public class PlayerNode : MonoBehaviour
         //TODO 停下来检查游戏的结果
         mainNode.gameWindow.mapNode.CheckGameResult();
     }
+    
 }

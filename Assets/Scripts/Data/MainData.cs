@@ -29,7 +29,7 @@ public partial class MainData
     
     public Dictionary<ObstacleNode, GridPos> obstacleNodes = new Dictionary<ObstacleNode, GridPos>();
     
-    public Dictionary<PointNode, GridPos> pointNodes = new Dictionary<PointNode, GridPos>();
+    public Dictionary<PointNode, GridPos> pointNodes = new Dictionary<PointNode, GridPos>(); // 还没收集的点位，随着点位收集会越来越少。
     // 玩家当前位置格子点
     private GridPos _playerGrid;
     public GridPos playerGrid

@@ -760,6 +760,7 @@ MonoBehaviour:
   touchNode: {fileID: 7332312728404867102}
   RestartButton: {fileID: 9442621796950651}
   ContinueBtn: {fileID: 1413228759222536352}
+  AutoPlayBtn: {fileID: 8305524919973633192}
 --- !u!1 &6085301643894822065
 GameObject:
   m_ObjectHideFlags: 0
