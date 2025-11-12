@@ -12,6 +12,7 @@ public class GameWindow : BaseUI
     public Button ContinueBtn;
     public Button AutoPlayBtn;
     
+    public MainData mainData => MainData.Instance;
     
     public override void start(IUIData uiData)
     { 

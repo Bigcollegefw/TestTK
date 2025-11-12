@@ -131,6 +131,7 @@ public class BFSSolver
             if (GameStateManager.IsWinningState(currentState, levelData))
             {
                 List<Direction> path = GameStateManager.ExtractPath(currentState);
+                
                 callback(CreateSolution(currentState, path)); // 传入路径给UI处理了。
                 yield break;
             }

@@ -65,9 +65,6 @@ public class MoveHint
     public bool IsPartOfOptimalPath;      // 是否为最优路径的一部分
 }
 
-
-
-
 // 求解器配置
 public class SolverConfig
 {
@@ -78,6 +75,7 @@ public class SolverConfig
     public int MaxStatesPerFrame = 100;// 每帧最大处理状态数（协程用）
 }
 
+// 表现的度量
 public class PerformanceMertrics
 {
     public int StatesExplored;  //探索的状态数

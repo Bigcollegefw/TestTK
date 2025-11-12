@@ -124,7 +124,7 @@ public class StateWithPriority : IComparable<StateWithPriority>
     {
         if (other == null) return 1;
         int result = Priority.CompareTo(other.Priority);  // 优先级一样返回0；
-        if(result == 0) return Sequence.CompareTo(other.Sequence);  
+        if(result == 0) return Sequence.CompareTo(other.Sequence);  // 如果优先级数量一样则按照先来后到排队的顺序。
         return result;
     }
 }

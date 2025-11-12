@@ -72,6 +72,27 @@ public partial class CacheManager
         }
     }
 
+    public AudioClip loadAudioClipByAssetBundle(string fileName)
+    {
+        AudioClip clip = this.loadResourceByAssetBundle<AudioClip>(fileName + ".mp3");
+        if (clip != null)
+        {
+            return clip;
+        }
+
+        // 如果小写不存在，再尝试大写 .MP3 扩展名的资源
+        clip = this.loadResourceByAssetBundle<AudioClip>(fileName + ".MP3");
+        if (clip != null)
+        {
+            return clip;
+        }
+        clip = this.loadResourceByAssetBundle<AudioClip>(fileName + ".wav");
+        if (clip == null)
+            Debug.LogError($"三种扩展名均未找到资源：{fileName}");
+        return clip;
+    }
+    
+    
     public T loadResourceByAssetBundle<T>(string fileName) where T : Object
     {
         var module = this.getAssetBundleMod(fileName);
