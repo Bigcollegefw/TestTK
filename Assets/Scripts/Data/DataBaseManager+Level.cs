@@ -34,6 +34,14 @@ public partial class DataBaseManager: SingletonData<DataBaseManager>
         return max;
     }
     
+    /// <summary>
+    /// 获取本关卡步数上限
+    /// </summary>
+    /// <returns></returns>
+    public int GetStepLimit()
+    {
+        return this.curLevelConfig.stepLimit;
+    }
     
      // 解析LevelData的方法
     private LevelData ParseLevelData(Dictionary<string, object> levelDic)

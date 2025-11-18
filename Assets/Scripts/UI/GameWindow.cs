@@ -47,7 +47,7 @@ public class GameWindow : BaseUI
 
     private void ShowHintVisual(MoveHint hint)
     {
-        Debug.Log($"[提示灯] 建议移动方向: {hint.Direction}, 置信度: {hint.Confidence}");
+        Debug.LogWarning($"[提示灯] 建议移动方向: {hint.Direction}, 置信度: {hint.Confidence}");
         
         string directionText = GetDirectionText(hint.Direction);
         Debug.Log($"💡 提示：向{directionText}移动");
@@ -87,6 +87,7 @@ public class GameWindow : BaseUI
     
     public void ReStartGame(bool isRestart = true)
     {
+        
         if (!isRestart)
         {
             if (dataIns.curLevel < dataIns.levelIdLimit)
@@ -97,5 +98,9 @@ public class GameWindow : BaseUI
         this.mainData.InitGameData();
         this.mapNode.InitMap();
         this.touchNode.InitTouch();
+
+        // 初始化求解器 , 切记每回都需要重新初始化求解器，并且更新这个关卡数据啊。
+        LevelData levelData = DataBaseManager.Instance.curLevelConfig;
+        TKSolverManager.Instance.Initialize(levelData);  
     }
 }

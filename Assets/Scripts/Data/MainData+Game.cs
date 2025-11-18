@@ -41,6 +41,7 @@ public partial class MainData
         this.gameResult = GameResult.common;
         this.playerGrid = new GridPos(0, 0);
         this.targetGrid = this.playerGrid;
+        this.remainStep = dataBaseMgr.GetStepLimit();
         this.isMoving = false;
         this.playerDead = false;
         this.arriveEnd = false;

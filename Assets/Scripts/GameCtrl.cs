@@ -27,7 +27,7 @@ public class GameCtrl : MonoBehaviour
     private List<BaseLoadingObject> _loadingObjectList;
     private float totalLoadingCount;
     private float loadingDelay;
-    private StateObject _stateObject;
+    private StateObject _stateObject;  // 这个状态机组件只用了一次。
 
     public static List<string> LoadingObjectSeq = new List<string>()
     {
@@ -96,7 +96,7 @@ public class GameCtrl : MonoBehaviour
             Debug.Log(o.toString());
             this._loadingObjectList.Add(o);
         }
-        this.loadingDelay = 0.5f;
+        this.loadingDelay = 0.01f;
         this.totalLoadingCount = this._loadingObjectList.Count;
         Debug.Log("加载出来了几个" + totalLoadingCount);
     }
@@ -121,6 +121,7 @@ public class GameCtrl : MonoBehaviour
         }
     }
 
+    // 必须等所有的Loading = 1的这些过程全部完成就会执行
     void leaveLoading()
     {
         Debug.Log("leaveLoading");

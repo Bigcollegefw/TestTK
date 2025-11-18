@@ -84,7 +84,18 @@ public partial class MainData
     public int remainStep
     {
         get { return _remainStep; }
-        set { _remainStep = value; }
+        set
+        {
+            _remainStep = value;
+            _useStep = dataBaseMgr.GetStepLimit() - _remainStep;
+        }
+    }
+
+    //已使用步数
+    private int _useStep;
+    public int useStep
+    {
+        get { return _useStep; }
     }
     // 游戏结果
     private GameResult _gameResult = GameResult.common;

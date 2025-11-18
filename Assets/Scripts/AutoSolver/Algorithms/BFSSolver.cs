@@ -102,13 +102,13 @@ public class BFSSolver
         // A*经典顺序：右下左上
         Direction[] directions = { Direction.Right, Direction.Down, Direction.Left, Direction.Up };
 
-        float startTime = Time.realtimeSinceStartup; // 返回游戏从启动（或编辑器进入 Play 模式）到现在所经过的“真实时间”
+        float startTime = Time.deltaTime; // 返回游戏从启动（或编辑器进入 Play 模式）到现在所经过的“真实时间”
 
         int statesProcessed = 0;
 
         while (queue.Count > 0) // 本质是层序遍历。
         {
-            if ((Time.realtimeSinceStartup - startTime) * 1000 > config.TimeLimit)
+            if ((Time.deltaTime - startTime) * 1000 > config.TimeLimit)
             {
                 Debug.LogWarning("[A*Solver] 搜索超时");
                 callback(null);
@@ -756,13 +756,14 @@ public class BFSSolver
         int uncollectedPoints = CountUncollectedPoints(state);
 
         // 如果所有点位都已收集，代价为0
-        if (uncollectedPoints == 0) return 0;
+        if (uncollectedPoints == 0) 
+            return 0;
         
         float minDistance = GetMinDistanceToNearestUncollectedPoint(state);
         
         // 启发式估计：每个点位估计需要5步 + 到最近点位的距离
         // 权重5是经验值
-        return uncollectedPoints * 5.0f + minDistance;
+        return uncollectedPoints * 2.0f + minDistance;
     }
 
     // 计算未收集的点位组数量
@@ -770,6 +771,8 @@ public class BFSSolver
     {
         if (levelData.mapData.point == null) return 0;
         int uncollected = 0;
+
+        // 这里计算点位组能对完全是因为每一个组都是一个，每个同级点位都被拆开成了一个组
         foreach (var pointGroup in levelData.mapData.point) // 里面的每个点位组
         {
             // pointGroup对应一个{“type”:1,"pos":[  [4,2],[4,8] ] }
@@ -793,7 +796,7 @@ public class BFSSolver
         return uncollected; 
     }
 
-    // 获取到最近未收集点位的曼哈顿距离
+    // 获取到最近未收集点曼哈顿距离
     private float GetMinDistanceToNearestUncollectedPoint(TKGameState state)
     { 
         float minDistance = float.MaxValue;

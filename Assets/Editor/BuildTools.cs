@@ -41,8 +41,7 @@ public class BuildTools
         var builds = _assetBundleBuilds.ToArray();
         BuildPipeline.BuildAssetBundles(targetPath,  //打包文件的输出目录。
             builds,  //AssetBundleBuild 数组，包含所有资源包的配置
-            BuildAssetBundleOptions.ChunkBasedCompression |
-            BuildAssetBundleOptions.DeterministicAssetBundle,
+            BuildAssetBundleOptions.ChunkBasedCompression,
             // LZ4 压缩算法, LZ4 压缩算法
             EditorUserBuildSettings.activeBuildTarget); //使用当前 Unity 编辑器激活的构建目标平台
 

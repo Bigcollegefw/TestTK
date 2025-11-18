@@ -154,7 +154,7 @@ public class UnityGameAdapter
         });
         
         MoveHint hint = null;
-        
+
         // 使用FindNextBestMoveWithSolution获取下一步和完整解决方案（A*算法）
         yield return quickSolver.FindNextBestMoveWithSolution(currentState, (bestMove, solution) =>
         {
@@ -164,13 +164,16 @@ public class UnityGameAdapter
                 cachedInitialState = GameStateManager.CloneState(currentState);
                 cachedSolver = quickSolver; // 保存求解器引用，用于模拟移动
                 currentStepIndex = 1; // 即将返回第0步，所以下次从第1步开始
-                
+
+                // 格式化解决方案路径
+                string solutionPath = FormatSolutionPath(solution.Path);
                 Debug.Log($"🏆 找到 {solution.Path.Length} 步解决方案");
-                
+                Debug.Log($"📋 完整路径: {solutionPath}");
+
                 // 返回第一步
                 float confidence = CalculateConfidence(currentState);
                 string reason = GenerateHintReason(bestMove.Value, currentState);
-                    
+
                 hint = new MoveHint
                 {
                     Direction = bestMove.Value,
@@ -184,6 +187,7 @@ public class UnityGameAdapter
                 ClearSolutionCache();
             }
         });
+        if (hint == null) Debug.LogWarning("hint == null");
         callback(hint);
     }
     
@@ -261,7 +265,7 @@ public class UnityGameAdapter
         }
         return remaining;
     }
-    
+
     // 清空解决方案缓存
     public void ClearSolutionCache()
     {
@@ -272,4 +276,36 @@ public class UnityGameAdapter
         Debug.Log($"🗑️ [缓存] 已清空");
     }
     
+    
+
+    /// <summary>
+    /// 格式化解决方案路径为中文字符串
+    /// 例如: "上 -> 左 -> 下 -> 右"
+    /// </summary>
+    private string FormatSolutionPath(Direction[] path)
+    {
+        if (path == null || path.Length == 0)
+        {
+            return "无";
+        }
+        
+        // Direction: None=0, Up=1, Down=2, Left=3, Right=4
+        string[] directionNames = { "无", "上", "下", "左", "右" };
+        
+        List<string> steps = new List<string>();
+        foreach (Direction dir in path)
+        {
+            int dirIndex = (int)dir;
+            if (dirIndex >= 0 && dirIndex < directionNames.Length)
+            {
+                steps.Add(directionNames[dirIndex]);
+            }
+            else
+            {
+                steps.Add("未知");
+            }
+        }
+        
+        return string.Join(" -> ", steps);
+    }
 }

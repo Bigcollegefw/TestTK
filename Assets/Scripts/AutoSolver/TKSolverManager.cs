@@ -72,8 +72,11 @@ public class TKSolverManager : MonoBehaviour
         // 开始新的异步计算
         currentHintCoroutine = StartCoroutine(adapter.CalculateHintAsync(mainData, hint =>
         {
-            callback(hint);
-            currentHintCoroutine = null;
+            if (hint != null)
+            {
+                callback(hint);
+                currentHintCoroutine = null;
+            }
         }));
         
     }
