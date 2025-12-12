@@ -29,6 +29,11 @@ public class BuildTools
             Directory.Delete(targetPath, true);
         }
 
+        // 检查大写文件夹并警告
+        Debug.Log("=== 开始检查文件夹命名 ===");
+        CheckSubFolderNames(rootPath);
+        Debug.Log("=== 文件夹命名检查完成 ===");
+        
         //rootPath（即 Assets/AssetBundleResource 文件夹）为根目录，递归扫描所有子文件夹，
         //收集需要打包的资源信息，并生成对应的 AssetBundleBuild 配置（存储在 _assetBundleBuilds 列表中）
         DirectoryInfo rootDirectory = new DirectoryInfo(rootPath);
@@ -55,6 +60,68 @@ public class BuildTools
         PackManagerPath.packPath();
     }
 
+    /// <summary>
+    /// 检查AssetBundleResource下的所有子文件夹名称是否包含大写字母
+    /// </summary>
+    /// <param name="assetBundleResourcePath">AssetBundleResource文件夹的完整路径</param>
+    static void CheckSubFolderNames(string assetBundleResourcePath)
+    {
+        DirectoryInfo rootDir = new DirectoryInfo(assetBundleResourcePath);
+        if (!rootDir.Exists)
+        {
+            return;
+        }
+
+        // 递归检查所有子文件夹，但不检查根目录本身
+        CheckFoldersRecursive(rootDir, "", true);
+    }
+    
+    /// <summary>
+    /// 递归检查文件夹名称
+    /// </summary>
+    /// <param name="directory">当前目录</param>
+    /// <param name="relativePath">相对于AssetBundleResource的路径</param>
+    /// <param name="isRoot">是否为根目录（AssetBundleResource）</param>
+    static void CheckFoldersRecursive(DirectoryInfo directory, string relativePath, bool isRoot = false)
+    {
+        DirectoryInfo[] subDirs = directory.GetDirectories();
+
+        foreach (DirectoryInfo subDir in subDirs)
+        {
+            string folderName = subDir.Name;
+
+            // 检查当前文件夹名是否包含大写字母
+            if (HasUppercaseLetters(folderName))
+            {
+                string displayPath = isRoot ? folderName : $"{relativePath}/{folderName}";
+                Debug.LogError($"[AssetBundle警告] 发现大写文件夹: '{displayPath}' - 建议使用小写文件夹名以避免跨平台兼容问题");
+            }
+
+            // 构建新的相对路径用于递归
+            string newRelativePath = isRoot ? folderName : $"{relativePath}/{folderName}";
+
+            // 递归检查子文件夹
+            CheckFoldersRecursive(subDir, newRelativePath, false);
+        }
+    }
+    
+    /// <summary>
+    /// 检查字符串是否包含大写字母
+    /// </summary>
+    /// <param name="text">要检查的字符串</param>
+    /// <returns>如果包含大写字母返回true</returns>
+    static bool HasUppercaseLetters(string text)
+    {
+        for (int i = 0; i < text.Length; i++)
+        {
+            if (char.IsUpper(text[i]))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+    
     static void createAssetBundlesByDir(DirectoryInfo directoryInfo)
     {
         // 排除根目录本身（只处理子目录及以下的资源）

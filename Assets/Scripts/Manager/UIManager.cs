@@ -73,6 +73,14 @@ public class UIManager : Singleton<UIManager>
         return null;
     }
 
+    public void clear()
+    {
+        foreach (var ui in this.uiList)
+        {
+            ui.Release();
+        }
+        this.uiList.Clear();
+    }
     public T OpenUI<T>(IUIData uiData = null) where T : BaseUI
     {
         var pui = this.uiList.Find(x => x.GetType() == typeof(T));

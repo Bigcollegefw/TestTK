@@ -83,6 +83,7 @@ public class BFSSolver
     }
      
     // 基于贪心逻辑的BFS搜索————这里为什么是贪心呢，因为这个都是去选取预估的最优路劲，由无数个最优路径完成的最优解的找法。
+    // 不就是A*吗？ 
     public IEnumerator BFSSearchWithGreedyLogic(TKGameState initialState, Action<Solution> callback)
     {
         // 使用A*算法的优先队列（最小堆）
@@ -128,7 +129,7 @@ public class BFSSolver
             metrics.StatesExplored++;
             statesProcessed++;
 
-            if (GameStateManager.IsWinningState(currentState, levelData))
+            if (GameStateManager.IsWinningState(currentState, levelData)) // 找到解了就直接暂停。
             {
                 List<Direction> path = GameStateManager.ExtractPath(currentState);
                 
@@ -761,9 +762,9 @@ public class BFSSolver
         
         float minDistance = GetMinDistanceToNearestUncollectedPoint(state);
         
-        // 启发式估计：每个点位估计需要5步 + 到最近点位的距离
+        // 启发式估计：每个点位估计需要5步 + 到最近点位的距离,所以意思就是优先探索收集点位越多的，点位收集越多，uncollectedPoints就越小，越小就越优先。 
         // 权重5是经验值
-        return uncollectedPoints * 2.0f + minDistance;
+        return uncollectedPoints * 5.0f + minDistance;
     }
 
     // 计算未收集的点位组数量

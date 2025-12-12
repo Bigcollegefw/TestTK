@@ -6,7 +6,7 @@ using CustomJson;
 
 public class PackManagerPath
 {
-    [MenuItem("Tools/BuildTool/PackPath")]
+    // [MenuItem("Tools/BuildTool/PackPath")] // 这个可以省略了
     public static void packPath()
     {
         var rootPath = BuildTools.rootPath;

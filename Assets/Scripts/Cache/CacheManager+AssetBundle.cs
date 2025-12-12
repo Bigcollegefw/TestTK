@@ -44,6 +44,7 @@ public partial class CacheManager
         });
     }
 
+    // 真正异步加载 AssetBundle 资源
     public void loadModuleByAssetBundleAysnc(string module, Action<AssetBundle> callBack)
     {
         if (this.assetBundles.containsKey(module))

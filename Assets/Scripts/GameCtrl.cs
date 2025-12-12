@@ -96,7 +96,7 @@ public class GameCtrl : MonoBehaviour
             Debug.Log(o.toString());
             this._loadingObjectList.Add(o);
         }
-        this.loadingDelay = 0.01f;
+        this.loadingDelay = 3f;
         this.totalLoadingCount = this._loadingObjectList.Count;
         Debug.Log("加载出来了几个" + totalLoadingCount);
     }
